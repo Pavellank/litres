@@ -1,23 +1,12 @@
 <?php
-
-	ini_set('memory_limit', '1600M');
-	ini_set('max_execution_time','1200');
-	ini_set('mysql.connect_timeout', 1000);
-
-
-	
-	//$exclude_genres = array('prose_rus_classic','prose_su_classics','antique_ant','antique_east','antique_russian','antique_european','foreign_antique','literature_18','literature_19','antique_myths','antique');
-	
 	include("functions.php");
 	include("config.php");
 	
 	//перебираем все типы материалов, которые нужно импортировать
 	//0-книги, 1-аудиокниги, 4 - pdf-книги, 11 - книги на английском, 12 - бумажные книги
-	$types_array = array(0,1,4);
-	foreach ($types_array as $type){
-		
+	$types_array = array(0, 1, 4);
+    foreach ($types_array as $type){
 		$k = 0;
-		
 		$q = "SELECT MAX(`updated`) - INTERVAL 1 SECOND AS start_date FROM litres_data WHERE type=" . $type;
 		$res = mysql_query($q);
 		if (mysql_num_rows($res) > 0){
@@ -32,16 +21,6 @@
 		else{
 			$start_date = "2010-01-01";
 		}
-		//echo $start_date; exit;
-		//$start_date = date("Y-m-d", time()-11*86400);
-		//$end_date = date("Y-m-d", time()+1*86400);
-		
-		//$start_date = "2016-06-01";
-		//$end_date = "2016-08-01";
-		
-		//ручной импорт определенной книги
-		//$uuid = '';
-		//$uuid = '4900c8be-474d-11e6-9ba0-0cc47a1952f2';
 		
 		$secret_key = '%dF\'s42$g&S(fQ"m-\b8bAL*d@d';
 		$place = 'PRTN';
@@ -49,7 +28,7 @@
 		
 		echo $url = 'http://hub.litres.ru/get_fresh_book/?place=' . $place . ($uuid != '' ? '&checkpoint=' . $start_date . '&uuid=' . $uuid : '&checkpoint=' . $start_date . '&endpoint=' . $end_date) . '&sha=' . hash('sha256',$timestamp.':'.$secret_key.':'.$start_date) . '&timestamp=' . $timestamp . '&type=' . $type . '&limit=10000';
 		$url = str_replace(' ', '+', $url);
-		
+
 		$s = file_get_contents($url);
 		$s = str_ireplace('updated-book','updated_book',$s);
 		$s = str_ireplace('removed-book','removed_book',$s);
@@ -60,7 +39,7 @@
 		$s = str_ireplace('book-title','book_title',$s);
 		$s = str_ireplace('full-name-rodit','full_name_rodit',$s);
 		$s = str_ireplace('src-lang','src_lang',$s);
-		
+
 		$xml = simplexml_load_string($s);
 		//удаление литресовских книг
 		//если книга на литресе удалилась то значит можем ее опять размещать в том виде что была в библиотеке, поэтому восстанавливаем данные о книге из бекапа
@@ -77,7 +56,7 @@
 		//--------------------------------
 		
 		//добавление новых литресовских книг
-		foreach ($xml->updated_book as $value){
+		foreach ($xml->litres_updates as $value){
 			if (!mysql_ping($db_link)){
 				mysql_close($db_link);
 				$db_link = mysql_connect(DBHOST,DBUSER,DBPASS);
@@ -195,15 +174,6 @@
 				}
 				else{
 					$genre = $value->title_info->genre;
-					/*
-					if ($value->title_info->genre[1] <> ''){
-						$genre .= '|' . $value->title_info->genre[1];
-					}
-						
-					if ($value->title_info->genre[2] <> ''){
-						$genre .= '|' . $value->title_info->genre[2];
-					}
-					*/
 				}
 				
 				$genre_names_array = array();
