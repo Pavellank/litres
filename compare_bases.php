@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(-1);
 	set_time_limit(0);
 
 	include("config.php");

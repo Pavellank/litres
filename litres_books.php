@@ -1,7 +1,6 @@
 ﻿<?php
-	
-	define('DATALIFEENGINE', true);
-	
+error_reporting(-1);
+
 	include("config.php");
 	include("functions.php");
 	include("rus-to-lat.php");
@@ -9,30 +8,13 @@
 	mysql_select_db(DB_NAME,$db_link);
 	mysql_query("SET NAMES " . DB_CHARSET,$db_link);
 	
-	mysql_select_db(DB_NAME1,$db_link);
+	$partner_id = 299612548;
 	
-	$partner_id = 159381876;
-	
-	$ids = implode(',',file('ids.csv'));
-	
+
 	/*AND local_book_id IS NULL
 					AND local_book_id_litres_catalog IS NULL*/
 	/*AND ydisk_book_url != ''*/
-	$q = "SELECT * FROM `litres_data`
-				JOIN `litres_genres_relation` ON (genre=litres_token)
-					WHERE
-					local_category != 0
-					AND `type` = 0
-					AND	`hub_id` > 0 AND (`lang` = 'ru' OR lang = '')
-					AND local_book_id IS NULL
-AND local_book_id_litres_catalog IS NULL
-					AND genre != ''
-					AND options&2
-					and hub_id IN (" . $ids . ")
-
-					ORDER BY date_inserted DESC
-					LIMIT 1
-				";
+	$q = "SELECT * FROM `litres_data`";
 
 	$result = mysql_query($q,$db_link);
 	while ($row = mysql_fetch_array($result)){
@@ -44,7 +26,7 @@ AND local_book_id_litres_catalog IS NULL
 			
 			$cover_name = mb_substr(str_ireplace(array('`','~','!','@','#','№','"',';','$','%','^',':','&','?','*','+','=','\'','|','\\','/',',','.',' '),'-',$row['author_name'] . '-' . $row['author_sname'] . '-' . $row['book_title']),0,80,'utf-8');
 			
-			$full_story = '<img src="http://posmotret.com/wp-content/uploads/litres/' . $cover_name . '.jpg" alt="' . mysql_real_escape_string($row['author_name'] . ' ' . $row['author_sname'] . ' - ' . $row['book_title']) . '" width="228" height="368" class="aligncenter size-full" />
+			$full_story = '<img src="http://я-книга.рф/upload/' . $cover_name . '.jpg" alt="' . mysql_real_escape_string($row['author_name'] . ' ' . $row['author_sname'] . ' - ' . $row['book_title']) . '" width="228" height="368" class="aligncenter size-full" />
 
 <strong>Автор: </strong>' . $row['author_name'] . ' ' . $row['author_sname'] . '
 
@@ -97,7 +79,7 @@ if ($row['hub_id']){
 				mysql_query($q1,$db_link);
 				$local_book_id = mysql_insert_id($db_link);
 				
-				echo $q = "UPDATE wp_posts SET guid = 'http://posmotret.com/?p=" . $local_book_id . "' WHERE ID = " . $local_book_id;
+				echo $q = "UPDATE wp_posts SET guid = 'http://я-книга.рф/?p=" . $local_book_id . "' WHERE ID = " . $local_book_id;
 				mysql_query($q,$db_link);
 				
 				//ищем автора
@@ -223,17 +205,17 @@ if ($row['hub_id']){
 			$cover_id = '0' . $cover_id;
 		}
 		$cover_path = 'http://www.litres.ru/static/bookimages/' . $cover_id[0] . $cover_id[1] . '/' . $cover_id[2] . $cover_id[3] . '/' . $cover_id[4] . $cover_id[5] . '/' . $cover_id . '.bin.dir/' . $cover_id . '.cover.' . $row['cover_ext'];
-
 		$new_image = new picture($cover_path);
 		$new_image->imageresizewidth(150);
-		$new_image->imagesave($new_image->image_type, '../../uploads/litres/' . $cover_name . '.jpg', 85);
-		$new_image->imageout();
-		/*
-		$new_image = new picture($cover_path);
-		$new_image->imageresizewidth(50);
-		$new_image->imagesave($new_image->image_type, '../../uploads/litres/' . $row['hub_id'] . '_small.jpg', 85);
-		$new_image->imageout();
-		*/
+		$new_image->imagesave($new_image->image_type, '../upload/' . $cover_name . '.jpg', 85);
+        $new_image->imageout();
+
+        /*
+        $new_image = new picture($cover_path);
+        $new_image->imageresizewidth(50);
+        $new_image->imagesave($new_image->image_type, '../../uploads/litres/' . $row['hub_id'] . '_small.jpg', 85);
+        $new_image->imageout();
+        */
 		//fb2 фрагмент
 		/*
 		$file_id = $row['hub_id'];

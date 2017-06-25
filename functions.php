@@ -3,7 +3,7 @@
 	//ставим 1251 локаль т.к. внешние csv в 1251
 	@setlocale(LC_ALL, array("Russian_Russia.1251","ru_RU.CP1251","ru_RU.cp1251","ru_RU","RU","rus_RUS.1251"));
 	
-	$partner_id = 159381876;
+	$partner_id = 299612548;
 	$table_prefix = 'wp_';
 
 	function multineedle_stripos($haystack, $needles, $offset=0) {
@@ -93,8 +93,9 @@
 						LIMIT 1";
 						
 					$res = mysql_query($q,$db_link);
-						
-					if (mysql_num_rows($res) > 0){
+				    echo $q;
+                    die;
+                    if (mysql_num_rows($res) > 0){
 						$r = mysql_fetch_array($res);
 						$litres_link = 'http://www.litres.ru/' . ($row['litres_url'] != '' ? $row['litres_url'] . '?lfrom=' : 'pages/biblio_book/?art=' . $row['hub_id'] . '&lfrom=' ) . $partner_id;
 						

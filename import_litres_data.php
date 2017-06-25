@@ -4,7 +4,7 @@
 	
 	//перебираем все типы материалов, которые нужно импортировать
 	//0-книги, 1-аудиокниги, 4 - pdf-книги, 11 - книги на английском, 12 - бумажные книги
-	$types_array = array(0, 1, 4);
+	$types_array = array(0, 1, 4, 11, 12);
     foreach ($types_array as $type){
 		$k = 0;
 		$q = "SELECT MAX(`updated`) - INTERVAL 1 SECOND AS start_date FROM litres_data WHERE type=" . $type;
@@ -26,7 +26,7 @@
 		$place = 'PRTN';
 		$timestamp = time();
 		
-		echo $url = 'http://hub.litres.ru/get_fresh_book/?place=' . $place . ($uuid != '' ? '&checkpoint=' . $start_date . '&uuid=' . $uuid : '&checkpoint=' . $start_date . '&endpoint=' . $end_date) . '&sha=' . hash('sha256',$timestamp.':'.$secret_key.':'.$start_date) . '&timestamp=' . $timestamp . '&type=' . $type . '&limit=10000';
+		echo $url = 'http://hub.litres.ru/get_fresh_book/?place=' . $place . ($uuid != '' ? '&checkpoint=' . $start_date . '&uuid=' . $uuid : '&checkpoint=' . $start_date . '&endpoint=' . $end_date) . '&sha=' . hash('sha256',$timestamp.':'.$secret_key.':'.$start_date) . '&timestamp=' . $timestamp . '&type=' . $type . '&limit=1000';
 		$url = str_replace(' ', '+', $url);
 
 		$s = file_get_contents($url);
@@ -251,6 +251,7 @@
 					$res = mysql_query($q);
 					if(!$res){echo 'not inserted: ' . $q; exit;}
 					$k++;
+					echo 'Was inserted ' . $book_title . PHP_EOL;
 				
 				
 				//новую книгу сразу сравниваем с локальной базой
