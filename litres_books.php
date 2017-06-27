@@ -62,10 +62,9 @@ if ($row['hub_id']){
 					comment_status = 'closed',
 					ping_status = 'closed',
 					post_password = '',
-					post_name = '" . mysql_real_escape_string(totranslit($row['author_name'] . ' ' . $row['author_sname'] . ' - ' . $row['book_title'])) . "', 
+					post_name = '" . mysql_real_escape_string(totranslit($row['author_name'] . ' ' . $row21['author_sname'] . ' - ' . $row['book_title'])) . "', 
 					to_ping = '',
 					pinged = '',
-					
 					post_content_filtered = '',
 					post_parent = 0,
 					guid = '',
