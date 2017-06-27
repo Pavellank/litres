@@ -3,15 +3,8 @@ include("config.php");
 include("functions.php");
 include("rus-to-lat.php");
 
-$optionArr = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-$pdo = new PDO("mysql:host=".DBHOST.";dbname=".DBNAME.";charset=utf8", DB_NAME, DBPASS, $optionArr);
-
 $litresBookArr = $pdo->query('SELECT * FROM litres_data')->execute();
+
 if(is_null($litresBookArr)){
     throw new Exception('Нет книг от Литрес');
 }
