@@ -19,7 +19,7 @@ Class ActiveRecord implements ActiveRecordInterface
     public static function model()
     {
         if(is_null($this->pdo)){
-        				$this->pdo = $_SESSION['pdo'];
+			$this->pdo = $_SESSION['pdo'];
         }
         $className = get_called_class();
         if (is_null(self::$instance[$className])) {
