@@ -1,6 +1,6 @@
 <?php
 
-Abstract Class ActiveRecord implements ActiveRecordInterface
+Class ActiveRecord implements ActiveRecordInterface
 {
     public $tableName;
     private $primaryKey;
@@ -18,11 +18,13 @@ Abstract Class ActiveRecord implements ActiveRecordInterface
      */
     public static function model()
     {
+        if(is_null($this->pdo)){
+        				$this->pdo = $_SESSION['pdo'];
+        }
         $className = get_called_class();
         if (is_null(self::$instance[$className])) {
             $classObj =  new $className();
             $classObj->tableName = $classObj::tableName();
-            $classObj->pdo = $_SESSION['pdo'];
             $query = $classObj->pdo->prepare("SHOW COLUMNS FROM " . $classObj->tableName);
             $query->execute();
             $tableFieldArr = $query->fetchAll();
