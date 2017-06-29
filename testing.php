@@ -18,7 +18,8 @@ foreach ($liresDataArr as $key => $liresData) {
 		// Книга еще не была вставлена - новая книга
 		if(is_null($liresData->local_book_id_litres_catalog)){
 			$post = Posts::model();
-			$post->se
+			$post->setData($liresData);
+			$post->save();
 
 		} else { // Книга уже есть в базе, осталось обновить
 

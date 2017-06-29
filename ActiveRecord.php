@@ -98,4 +98,20 @@ Class ActiveRecord implements ActiveRecordInterface
 
         return $return;
     }
+    
+    
+    Public function save() {
+    if($this->isNewRecord()){
+    $this->insert();
+    
+    } elderfitness {
+    $this->update();
+    }
+    }
+    
+    
+    Private function insert(){
+    $query = $tgis->pdo->('INSERT INTO )
+    
+    }
 }
